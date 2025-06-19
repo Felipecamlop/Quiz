@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Dragon Ball</title>
+</head>
+<body>
+    <center>
+        <table width="90%" cellpadding="20" cellspacing="0" border="0">
+            <tr>
+                <td align="center">
+                    <header>
+                        <h1>🐉 Quiz Dragon Ball</h1>
+                        <hr width="50%">
+                        <nav>
+                            <table cellpadding="10" cellspacing="10">
+                                <tr>
+                                    <td><button onclick="iniciarJogo()"><big><b>🎮 Jogar</b></big></button></td>
+                                    <td><button onclick="mostrarSobre()"><big><b>ℹ️ Sobre</b></big></button></td>
+                                </tr>
+                            </table>
+                        </nav>
+                        <hr width="50%">
+                    </header>
+
+                    <main>
+                        <div id="menu-inicial">
+                            <table cellpadding="15" cellspacing="0" border="1" width="100%">
+                                <tr bgcolor="#E6F3FF">
+                                    <td align="center">
+                                        <h2>🎯 Bem-vindo ao Quiz Dragon Ball!</h2>
+                                        <p><big>Teste seus conhecimentos sobre o universo Dragon Ball!</big></p>
+                                        <p><i>Clique em "Jogar" no menu acima para começar.</i></p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div id="jogo" style="display: none;">
+                            <table cellpadding="10" cellspacing="0" border="1" width="100%">
+                                <tr bgcolor="#E6F3FF">
+                                    <td align="center">
+                                        <h3>🏆 Pontos: <span id="pontos">0</span></h3>
+                                    </td>
+                                </tr>
+                            </table>
+                            <br>
+                            
+                            <div id="pergunta-container">
+                                <table cellpadding="15" cellspacing="0" border="2" width="100%">
+                                    <tr bgcolor="#F0F8FF">
+                                        <td align="center">
+                                            <h2 id="pergunta-texto"></h2>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <br>
+                                <form id="form-pergunta">
+                                    <fieldset>
+                                        <legend><b>🤔 Escolha sua resposta:</b></legend>
+                                        <table cellpadding="8" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td align="left">
+                                                    <ol id="alternativas">
+                                                    </ol>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <br>
+                                        <button type="button" id="btn-responder" onclick="responder()" style="display: none;"><big><b>✅ Responder</b></big></button>
+                                    </fieldset>
+                                </form>
+                            </div>
+
+                            <div id="resultado" style="display: none;">
+                                <br>
+                                <table cellpadding="15" cellspacing="0" border="2" width="100%">
+                                    <tr bgcolor="#F5F5F5">
+                                        <td align="center">
+                                            <h3 id="mensagem-resultado"></h3>
+                                            <button type="button" id="btn-proxima" onclick="proximaPergunta()" style="display: none;"><big><b>➡️ Próxima Pergunta</b></big></button>
+                                            <button type="button" id="btn-jogar-novamente" onclick="jogarNovamente()" style="display: none;"><big><b>🔄 Jogar Novamente</b></big></button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="sobre" style="display: none;">
+                            <table cellpadding="20" cellspacing="0" border="2" width="100%">
+                                <tr bgcolor="#E6F3FF">
+                                    <td align="center">
+                                        <h2>ℹ️ Sobre o Quiz</h2>
+                                    </td>
+                                </tr>
+                                <tr bgcolor="#F0F8FF">
+                                    <td align="center">
+                                        <blockquote>
+                                            <p><big><i>O site está em fase beta, ele ganhará atualizações aumentando a quantidade de perguntas e futuramente ganhará mais modalidades de temas a se jogar.</i></big></p>
+                                        </blockquote>
+                                        <br>
+                                        <button onclick="voltarMenu()"><big><b>🏠 Voltar ao Menu</b></big></button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </main>
+
+                    <footer>
+                        <br><br>
+                        <hr width="50%">
+                        <p><small><i>🐲 Quiz Dragon Ball - Versão HTML Pura</i></small></p>
+                    </footer>
+                </td>
+            </tr>
+        </table>
+    </center>
+
+    <script>
+        // Banco de perguntas
+        const perguntas = [
+            {
+                pergunta: "Quem mata o Vegeta pela primeira vez?",
+                alternativas: ["Majin Boo", "Goku", "Freeza", "Cell"],
+                correta: 2
+            },
+            {
+                pergunta: "Qual o verdadeiro nome do Goku, revelado por Raditz?",
+                alternativas: ["Bardock", "Kakarotto", "Turles", "Goten"],
+                correta: 1
+            },
+            {
+                pergunta: "Qual personagem foi inspirado em empresários gananciosos dos anos 80?",
+                alternativas: ["Cell", "Freeza", "Dabura", "Vegeta"],
+                correta: 1
+            },
+            {
+                pergunta: "Qual personagem nunca morreu em toda a série Dragon Ball Z?",
+                alternativas: ["Kuririn", "Goku", "Mr. Satan", "Yamcha"],
+                correta: 2
+            },
+            {
+                pergunta: "Quem foi o primeiro personagem a atingir o Super Saiyajin 2?",
+                alternativas: ["Vegeta", "Trunks do Futuro", "Goku", "Gohan"],
+                correta: 3
+            },
+            {
+                pergunta: "Qual dessas personagens é dublada pela mesma pessoa que faz a voz do Goku no Japão?",
+                alternativas: ["Vegeta", "Gohan", "Kuririn", "Piccolo"],
+                correta: 1
+            },
+            {
+                pergunta: "Qual desses vilões não foi originalmente planejado e só surgiu por sugestão do editor?",
+                alternativas: ["Cell", "Freeza", "Nappa", "Dodoria"],
+                correta: 0
+            },
+            {
+                pergunta: "Quem é o pai da Pan, personagem introduzida no final da série?",
+                alternativas: ["Vegeta", "Trunks", "Gohan", "Yamcha"],
+                correta: 2
+            },
+            {
+                pergunta: "Qual técnica foi batizada pela esposa de Akira Toriyama?",
+                alternativas: ["Genki Dama", "Kamehameha", "Galick Gun", "Makankosappo"],
+                correta: 1
+            },
+            {
+                pergunta: "Qual a explicação de Vegeta para o cabelo dos Saiyajins não mudar com o tempo?",
+                alternativas: ["Herança genética fraca", "Energia ki estabilizadora", "Eles cortam regularmente", "Cabelo de Saiyajin não cresce"],
+                correta: 3
+            },
+            {
+                pergunta: "Qual o nome do planeta natal dos Saiyajins?",
+                alternativas: ["Namekusei", "Terra", "Planeta Vegeta", "Yardrat"],
+                correta: 2
+            },
+            {
+                pergunta: "Qual desses personagens foi inspirado em Bruce Lee para movimentos e visual?",
+                alternativas: ["Trunks", "Goku em Super Saiyajin", "Kuririn", "Cell"],
+                correta: 1
+            },
+            {
+                pergunta: "Quem foi o primeiro vilão que os Guerreiros Z enfrentaram em Dragon Ball Z?",
+                alternativas: ["Nappa", "Freeza", "Cell", "Raditz"],
+                correta: 3
+            },
+            {
+                pergunta: "Quantos episódios durou a luta de Goku contra Freeza no anime?",
+                alternativas: ["8", "19", "3", "12"],
+                correta: 1
+            },
+            {
+                pergunta: "Qual destes personagens é um dos pets do Senhor Kaio?",
+                alternativas: ["Oolong", "Bubbles", "Yajirobe", "Mr. Popo"],
+                correta: 1
+            },
+            {
+                pergunta: "Quem foi o primeiro a descobrir a fraqueza de Nappa durante a invasão à Terra?",
+                alternativas: ["Goku", "Kuririn", "Piccolo", "Tenshinhan"],
+                correta: 1
+            },
+            {
+                pergunta: "Qual destes personagens é filho do Rei Vegeta?",
+                alternativas: ["Raditz", "Vegeta", "Broly", "Tarble"],
+                correta: 1
+            },
+            {
+                pergunta: "Quem foi o personagem que usou a técnica 'Bakuhatsuha' para destruir uma cidade?",
+                alternativas: ["Cell", "Vegeta", "Nappa", "Zarbon"],
+                correta: 2
+            },
+            {
+                pergunta: "Qual desses personagens aparece como cyborg em um episódio filler?",
+                alternativas: ["Yamcha", "Tao Pai Pai", "Mr. Satan", "Yajirobe"],
+                correta: 1
+            },
+            {
+                pergunta: "Qual o personagem que alegou estar com câimbra para não lutar contra Cell?",
+                alternativas: ["Mr. Satan", "Tenshinhan", "Kuririn", "Goku"],
+                correta: 0
+            },
+            {
+                pergunta: "Quem foi o primeiro personagem a morrer em Dragon Ball Z?",
+                alternativas: ["Goku", "Piccolo", "Raditz", "Kuririn"],
+                correta: 0
+            },
+            {
+                pergunta: "Qual é o nome verdadeiro de Mr. Satan?",
+                alternativas: ["Satan", "Dabra", "Mark", "Buu"],
+                correta: 2
+            },
+            {
+                pergunta: "Qual dessas personagens é filha de Gohan e Videl?",
+                alternativas: ["Bra", "Marron", "Pan", "Launch"],
+                correta: 2
+            },
+            {
+                pergunta: "Qual dos personagens abaixo foi transformado em pedra por Dabura?",
+                alternativas: ["Vegeta", "Piccolo", "Goten", "Goku"],
+                correta: 1
+            },
+            {
+                pergunta: "Qual é o golpe mais famoso de Goku?",
+                alternativas: ["Galick Gun", "Final Flash", "Makankosappo", "Kamehameha"],
+                correta: 3
+            },
+            {
+                pergunta: "Quem vence o torneio infantil de artes marciais no final da saga Boo?",
+                alternativas: ["Goten", "Uub", "Trunks", "Marron"],
+                correta: 2
+            },
+            {
+                pergunta: "Quantos episódios tem a série Dragon Ball Z?",
+                alternativas: ["263", "151", "291", "312"],
+                correta: 2
+            },
+            {
+                pergunta: "Qual desses personagens se funde com Kami?",
+                alternativas: ["Goku", "Piccolo", "Nail", "Vegeta"],
+                correta: 1
+            },
+            {
+                pergunta: "O que faz com que Garlic Jr. escape da Zona da Morte?",
+                alternativas: ["Poder do Kaioshin", "Esferas do Dragão", "Makyo Star", "Intervenção de Gohan"],
+                correta: 2
+            },
+            {
+                pergunta: "Qual é a raça do Freeza?",
+                alternativas: ["Saiyajin", "Arcosiano", "Namekuseijin", "Demônio do Frio"],
+                correta: 1
+            },
+            {
+                pergunta: "Quem foi o primeiro personagem a usar a técnica de fusão por brincadeira?",
+                alternativas: ["Vegeta", "Goku", "Trunks e Goten", "Kuririn e Yamcha"],
+                correta: 2
+            },
+            {
+                pergunta: "Qual desses personagens foi inicialmente um vilão e virou aliado?",
+                alternativas: ["Cell", "Piccolo", "Freeza", "Dabura"],
+                correta: 1
+            },
+            {
+                pergunta: "Quem destrói o Planeta Vegeta?",
+                alternativas: ["Bardock", "Freeza", "Goku", "Broly"],
+                correta: 1
+            },
+            {
+                pergunta: "Quantos dias Goku treinou com o Senhor Kaio?",
+                alternativas: ["44 dias", "100 dias", "88 dias", "1 ano"],
+                correta: 2
+            },
+            {
+                pergunta: "Qual o nome do planeta onde vivem os Kaioh?",
+                alternativas: ["Planeta Supremo", "Planeta do Senhor Kaio", "Yadrat", "Yardrat"],
+                correta: 1
+            },
+            {
+                pergunta: "Quem foi o primeiro personagem a transformar-se em Super Saiyajin 3?",
+                alternativas: ["Gohan", "Gotenks", "Goku", "Vegeta"],
+                correta: 2
+            },
+            {
+                pergunta: "O que significa o nome 'Videl'?",
+                alternativas: ["Filha do diabo", "Pequena guerreira", "Justiça pura", "Poder gentil"],
+                correta: 0
+            },
+            {
+                pergunta: "Qual destes personagens já foi namorado da Bulma?",
+                alternativas: ["Kuririn", "Yamcha", "Vegeta", "Tenshinhan"],
+                correta: 1
+            },
+            {
+                pergunta: "Quem derrota Cell definitivamente?",
+                alternativas: ["Goku", "Vegeta", "Gohan", "Trunks do Futuro"],
+                correta: 2
+            },
+            {
+                pergunta: "Qual personagem apareceu pela primeira vez ao sair de uma nave vinda do espaço?",
+                alternativas: ["Raditz", "Nappa", "Goku", "Gotenks"],
+                correta: 0
+            },
+            {
+                pergunta: "Quem foi o primeiro a usar o golpe 'Galick Gun'?",
+                alternativas: ["Goku", "Vegeta", "Freeza", "Nappa"],
+                correta: 1
+            },
+            {
+                pergunta: "Qual é a relação entre Bibidi, Babidi e Buu?",
+                alternativas: ["São irmãos", "São vilões diferentes", "São nomes inspirados em um feitiço de Cinderela", "São mestres de artes marciais"],
+                correta: 2
+            },
+            {
+                pergunta: "Quem treinou Goku durante sua infância?",
+                alternativas: ["Mestre Roshi", "Tenshinhan", "Piccolo", "Kami"],
+                correta: 0
+            },
+            {
+                pergunta: "Qual personagem ficou famoso por ser considerado 'inútil' pelos fãs, apesar de ser importante?",
+                alternativas: ["Yamcha", "Krillin", "Tien", "Chiaotzu"],
+                correta: 0
+            },
+            {
+                pergunta: "Qual é a principal arma do Android 18?",
+                alternativas: ["Galick Gun", "Golpe de energia", "Luta corpo a corpo", "Espada"],
+                correta: 2
+            },
+            {
+                pergunta: "Qual personagem foi inspirado no Jackie Chan?",
+                alternativas: ["Goku", "Kuririn", "Yamcha", "Trunks"],
+                correta: 2
+            },
+            {
+                pergunta: "Quem criou Dragon Ball?",
+                alternativas: ["Eiichiro Oda", "Masashi Kishimoto", "Akira Toriyama", "Yoshihiro Togashi"],
+                correta: 2
+            },
+            {
+                pergunta: "Qual é a técnica usada para medir o poder de luta dos personagens?",
+                alternativas: ["Radar Dragon Ball", "Scouter", "Sensor Kai", "Detector de Energia"],
+                correta: 1
+            },
+            {
+                pergunta: "Qual personagem tem a habilidade de teletransporte (Instant Transmission)?",
+                alternativas: ["Vegeta", "Goku", "Gohan", "Trunks"],
+                correta: 1
+            },
+            {
+                pergunta: "Qual o nome do planeta onde Goku foi criado?",
+                alternativas: ["Planeta Vegeta", "Terra", "Namekusei", "Yardrat"],
+                correta: 1
+            },
+            {
+                pergunta: "Quem foi o criador do Android 17 e Android 18?",
+                alternativas: ["Dr. Gero", "Dr. Briefs", "Dr. Mashirito", "Dr. Myuu"],
+                correta: 0
+            },
+            {
+                pergunta: "Qual o nome do príncipe Saiyajin?",
+                alternativas: ["Kakarotto", "Vegeta", "Broly", "Raditz"],
+                correta: 1
+            }
+        ];
+
+        let perguntaAtual = 0;
+        let pontos = 0;
+        let perguntasUsadas = [];
+        let respostaSelecionada = null;
+
+        function mostrarSecao(secaoId) {
+            document.getElementById('menu-inicial').style.display = 'none';
+            document.getElementById('jogo').style.display = 'none';
+            document.getElementById('sobre').style.display = 'none';
+            document.getElementById(secaoId).style.display = 'block';
+        }
+
+        function iniciarJogo() {
+            mostrarSecao('jogo');
+            pontos = 0;
+            perguntasUsadas = [];
+            document.getElementById('pontos').textContent = pontos;
+            proximaPergunta();
+        }
+
+        function mostrarSobre() {
+            mostrarSecao('sobre');
+        }
+
+        function voltarMenu() {
+            mostrarSecao('menu-inicial');
+        }
+
+        function proximaPergunta() {
+            // Esconder resultado anterior
+            document.getElementById('resultado').style.display = 'none';
+            
+            // Verificar se ainda há perguntas disponíveis
+            if (perguntasUsadas.length >= perguntas.length) {
+                // Fim do jogo - todas as perguntas foram respondidas
+                document.getElementById('pergunta-container').innerHTML = 
+                    '<table cellpadding="20" cellspacing="0" border="2" width="100%" bgcolor="#E6FFE6"><tr><td align="center">' +
+                    '<h2>🎉 Parabéns! Você completou o quiz!</h2><p><big><b>Pontuação final: ' + pontos + ' pontos</b></big></p>' +
+                    '</td></tr></table>';
+                document.getElementById('resultado').innerHTML = 
+                    '<br><table cellpadding="15" cellspacing="0" border="2" width="100%" bgcolor="#F0F8FF"><tr><td align="center">' +
+                    '<button type="button" onclick="jogarNovamente()"><big><b>🔄 Jogar Novamente</b></big></button> ' +
+                    '<button type="button" onclick="voltarMenu()"><big><b>🏠 Voltar ao Início</b></big></button>' +
+                    '</td></tr></table>';
+                document.getElementById('resultado').style.display = 'block';
+                return;
+            }
+
+            // Escolher pergunta aleatória que ainda não foi usada
+            let indicePergunta;
+            do {
+                indicePergunta = Math.floor(Math.random() * perguntas.length);
+            } while (perguntasUsadas.includes(indicePergunta));
+
+            perguntasUsadas.push(indicePergunta);
+            perguntaAtual = indicePergunta;
+
+            // Exibir pergunta
+            const pergunta = perguntas[perguntaAtual];
+            document.getElementById('pergunta-texto').textContent = pergunta.pergunta;
+
+            // Criar alternativas
+            const alternativasHtml = pergunta.alternativas.map((alt, index) => 
+                '<li><label><input type="radio" name="resposta" value="' + index + '" onchange="selecionarResposta(' + index + ')"> ' + alt + '</label></li>'
+            ).join('');
+
+            document.getElementById('alternativas').innerHTML = alternativasHtml;
+            
+            // Esconder botão responder inicialmente
+            document.getElementById('btn-responder').style.display = 'none';
+            respostaSelecionada = null;
+        }
+
+        function selecionarResposta(indice) {
+            respostaSelecionada = indice;
+            document.getElementById('btn-responder').style.display = 'inline-block';
+        }
+
+        function responder() {
+            if (respostaSelecionada === null) return;
+
+            const pergunta = perguntas[perguntaAtual];
+            const acertou = respostaSelecionada === pergunta.correta;
+
+            if (acertou) {
+                pontos += 10;
+                document.getElementById('pontos').textContent = pontos;
+                document.getElementById('mensagem-resultado').textContent = '✅ Correto! +10 pontos';
+                document.getElementById('btn-proxima').style.display = 'inline-block';
+                document.getElementById('btn-jogar-novamente').style.display = 'none';
+            } else {
+                document.getElementById('mensagem-resultado').textContent = '❌ Que pena, você errou!';
+                document.getElementById('btn-proxima').style.display = 'none';
+                document.getElementById('btn-jogar-novamente').style.display = 'inline-block';
+            }
+
+            document.getElementById('resultado').style.display = 'block';
+            document.getElementById('btn-responder').style.display = 'none';
+        }
+
+        function jogarNovamente() {
+            iniciarJogo();
+        }
+
+        // Inicializar com menu principal visível
+        mostrarSecao('menu-inicial');
+    </script>
+</body>
+</html>
