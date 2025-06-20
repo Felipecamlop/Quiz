@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -29,9 +30,39 @@
                             <table cellpadding="15" cellspacing="0" border="1" width="100%">
                                 <tr bgcolor="#E6F3FF">
                                     <td align="center">
-                                        <h2>🎯 Bem-vindo ao Quiz Dragon Ball!</h2>
-                                        <p><big>Teste seus conhecimentos sobre o universo Dragon Ball!</big></p>
+                                        <h2>🎯 Bem-vindo ao Quiz!</h2>
+                                        <p><big>Teste seus conhecimentos em diversos temas!</big></p>
                                         <p><i>Clique em "Jogar" no menu acima para começar.</i></p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div id="selecao-tema" style="display: none;">
+                            <table cellpadding="15" cellspacing="0" border="1" width="100%">
+                                <tr bgcolor="#E6F3FF">
+                                    <td align="center">
+                                        <h2>🎯 Escolha um tema para iniciar o Quiz:</h2>
+                                        <br>
+                                        <table cellpadding="10" cellspacing="10">
+                                            <tr>
+                                                <td><button onclick="selecionarTema('dragonball')"><big><b>🐉 Dragon Ball</b></big></button></td>
+                                                <td><button onclick="selecionarTema('cartoon')"><big><b>📺 Cartoon Network</b></big></button></td>
+                                                <td><button onclick="selecionarTema('pokemon')"><big><b>⚡ Pokemon</b></big></button></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div id="em-breve" style="display: none;">
+                            <table cellpadding="20" cellspacing="0" border="2" width="100%">
+                                <tr bgcolor="#FFF3CD">
+                                    <td align="center">
+                                        <h2>🚧 Em breve essa opção estará disponível para jogar</h2>
+                                        <br>
+                                        <button onclick="voltarMenu()"><big><b>🏠 Voltar ao Início</b></big></button>
                                     </td>
                                 </tr>
                             </table>
@@ -79,6 +110,9 @@
                                     <tr bgcolor="#F5F5F5">
                                         <td align="center">
                                             <h3 id="mensagem-resultado"></h3>
+                                            <div id="resposta-correta" style="display: none;">
+                                                <p><b>A resposta correta era:</b> <span id="texto-resposta-correta"></span></p>
+                                            </div>
                                             <button type="button" id="btn-proxima" onclick="proximaPergunta()" style="display: none;"><big><b>➡️ Próxima Pergunta</b></big></button>
                                             <button type="button" id="btn-jogar-novamente" onclick="jogarNovamente()" style="display: none;"><big><b>🔄 Jogar Novamente</b></big></button>
                                         </td>
@@ -386,20 +420,32 @@
         let pontos = 0;
         let perguntasUsadas = [];
         let respostaSelecionada = null;
+        let jogoAtivo = true;
 
         function mostrarSecao(secaoId) {
             document.getElementById('menu-inicial').style.display = 'none';
+            document.getElementById('selecao-tema').style.display = 'none';
+            document.getElementById('em-breve').style.display = 'none';
             document.getElementById('jogo').style.display = 'none';
             document.getElementById('sobre').style.display = 'none';
             document.getElementById(secaoId).style.display = 'block';
         }
 
         function iniciarJogo() {
-            mostrarSecao('jogo');
-            pontos = 0;
-            perguntasUsadas = [];
-            document.getElementById('pontos').textContent = pontos;
-            proximaPergunta();
+            mostrarSecao('selecao-tema');
+        }
+
+        function selecionarTema(tema) {
+            if (tema === 'dragonball') {
+                mostrarSecao('jogo');
+                pontos = 0;
+                perguntasUsadas = [];
+                jogoAtivo = true;
+                document.getElementById('pontos').textContent = pontos;
+                proximaPergunta();
+            } else {
+                mostrarSecao('em-breve');
+            }
         }
 
         function mostrarSobre() {
@@ -410,9 +456,24 @@
             mostrarSecao('menu-inicial');
         }
 
+        function desabilitarAlternativas() {
+            const inputs = document.querySelectorAll('input[name="resposta"]');
+            inputs.forEach(input => {
+                input.disabled = true;
+            });
+        }
+
+        function habilitarAlternativas() {
+            const inputs = document.querySelectorAll('input[name="resposta"]');
+            inputs.forEach(input => {
+                input.disabled = false;
+            });
+        }
+
         function proximaPergunta() {
             // Esconder resultado anterior
             document.getElementById('resultado').style.display = 'none';
+            document.getElementById('resposta-correta').style.display = 'none';
             
             // Verificar se ainda há perguntas disponíveis
             if (perguntasUsadas.length >= perguntas.length) {
@@ -450,18 +511,24 @@
 
             document.getElementById('alternativas').innerHTML = alternativasHtml;
             
+            // Habilitar alternativas se o jogo estiver ativo
+            if (jogoAtivo) {
+                habilitarAlternativas();
+            }
+            
             // Esconder botão responder inicialmente
             document.getElementById('btn-responder').style.display = 'none';
             respostaSelecionada = null;
         }
 
         function selecionarResposta(indice) {
+            if (!jogoAtivo) return;
             respostaSelecionada = indice;
             document.getElementById('btn-responder').style.display = 'inline-block';
         }
 
         function responder() {
-            if (respostaSelecionada === null) return;
+            if (respostaSelecionada === null || !jogoAtivo) return;
 
             const pergunta = perguntas[perguntaAtual];
             const acertou = respostaSelecionada === pergunta.correta;
@@ -469,11 +536,17 @@
             if (acertou) {
                 pontos += 10;
                 document.getElementById('pontos').textContent = pontos;
-                document.getElementById('mensagem-resultado').textContent = '✅ Correto! +10 pontos';
+                document.getElementById('mensagem-resultado').innerHTML = '✅ <span style="color: green;">Correto! +10 pontos</span>';
                 document.getElementById('btn-proxima').style.display = 'inline-block';
                 document.getElementById('btn-jogar-novamente').style.display = 'none';
             } else {
-                document.getElementById('mensagem-resultado').textContent = '❌ Que pena, você errou!';
+                // Desabilitar todas as alternativas quando errar
+                jogoAtivo = false;
+                desabilitarAlternativas();
+                
+                document.getElementById('mensagem-resultado').innerHTML = '❌ <span style="color: red;">Que pena, você errou!</span>';
+                document.getElementById('texto-resposta-correta').textContent = pergunta.alternativas[pergunta.correta];
+                document.getElementById('resposta-correta').style.display = 'block';
                 document.getElementById('btn-proxima').style.display = 'none';
                 document.getElementById('btn-jogar-novamente').style.display = 'inline-block';
             }
@@ -483,7 +556,7 @@
         }
 
         function jogarNovamente() {
-            iniciarJogo();
+            selecionarTema('dragonball');
         }
 
         // Inicializar com menu principal visível
